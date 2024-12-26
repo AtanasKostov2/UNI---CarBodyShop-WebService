@@ -2,5 +2,6 @@
 plan.txt
 alembic tips.txt
 FE/node_modules
-/__pycache__
+*__pycache__
 database.db
+/alembic

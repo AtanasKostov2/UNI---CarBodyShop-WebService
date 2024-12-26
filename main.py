@@ -1,12 +1,8 @@
-from constants import DATABASE_URL
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy import create_engine
-
-from models import Car, Garage, Maintenance
-from pydantic_models import GarageValidation
+from fastapi import FastAPI
 
 from fastapi.middleware.cors import CORSMiddleware
-import garages
+import endpoints.garages as garages
+import endpoints.cars as cars
 
 app = FastAPI()
 
@@ -19,6 +15,7 @@ app.add_middleware(
 )
 
 app.include_router(garages.router, prefix="/garages", tags=["Garages"])
+app.include_router(cars.router, prefix="/cars", tags=["Cars"])
 
 
 @app.get("/")

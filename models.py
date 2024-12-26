@@ -15,6 +15,8 @@ class Garage(Base):
     name = Column(String, nullable=False)
     capacity = Column(Integer, nullable=False, default=0)
 
+    cars = relationship("CarGarageBridge", back_populates="garage")
+
     @property
     def available(self):
         return self.capacity - len(self.maintenances)
@@ -29,6 +31,20 @@ class Car(Base):
     model = Column(String, nullable=False)
     productionYear = Column(Integer, nullable=False)
     licensePlate = Column(String, nullable=False)
+
+    garages = relationship("CarGarageBridge", back_populates="car")
+
+
+class CarGarageBridge(Base):
+    """Implements many-to-many relationship between Car and Garages"""
+
+    __tablename__ = "CarGarageBridge"
+    id = Column(Integer, primary_key=True)
+    carId = Column(Integer, ForeignKey("Car.id"), nullable=False)
+    garageId = Column(Integer, ForeignKey("Garage.id"), nullable=False)
+
+    car = relationship("Car", back_populates="garages")
+    garage = relationship("Garage", back_populates="cars")
 
 
 class Maintenance(Base):
@@ -55,5 +71,14 @@ class Maintenance(Base):
 # Create a connection to the db
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 
+# # Delete all data
+# Base.metadata.drop_all(engine)
+
 # Create tables
 Base.metadata.create_all(bind=engine)
+
+
+##########################
+# alembic migrations update:
+# alembic revision --autogenerate -m "comment"
+# alembic upgrade head
