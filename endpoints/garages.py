@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 
 from models import Car, Garage, Maintenance
 from pydantic_models import GarageValidation
-from fastapi.middleware.cors import CORSMiddleware
 
 
 router = APIRouter()
@@ -23,7 +22,7 @@ def post_garage(garage: GarageValidation, db: Session = Depends(get_db)):
 def get_garage(garage_id: int, db: Session = Depends(get_db)):
     garage = db.get(Garage, garage_id)
     if garage is None:
-        raise HTTPException(status_code=404, detail="Garage not found")
+        raise HTTPException(status_code=404, detail="Garage with id: {garage_id} not found")
 
     return garage
 
