@@ -61,7 +61,7 @@ def put_garage(garage_id: int, garage: GarageValidation, db: Session = Depends(g
 def delete_garage(garage_id: int, db: Session = Depends(get_db)):
     db_garage = db.get(Garage, garage_id)
 
-    if not db_garage:
+    if db_garage is None:
         raise HTTPException(status_code=404, detail="Garage not found")
 
     db.delete(db_garage)
