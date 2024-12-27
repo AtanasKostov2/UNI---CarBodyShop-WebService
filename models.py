@@ -1,7 +1,8 @@
 from pyexpat import model
 from sqlalchemy import Column, Date, ForeignKey, Integer, String, create_engine
-from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy.orm import relationship, declarative_base, sessionmaker
 from constants import DATABASE_URL
+
 
 Base = declarative_base()
 
@@ -15,7 +16,7 @@ class Garage(Base):
     name = Column(String, nullable=False)
     capacity = Column(Integer, nullable=False, default=0)
 
-    cars = relationship("CarGarageBridge", back_populates="garage")
+    cars = relationship("Car", secondary="CarGarageBridge", back_populates="garages")
 
     @property
     def available(self):
@@ -26,13 +27,13 @@ class Car(Base):
     __tablename__ = "Car"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=True)
     make = Column(String, nullable=False)  # ???
     model = Column(String, nullable=False)
     productionYear = Column(Integer, nullable=False)
     licensePlate = Column(String, nullable=False)
 
-    garages = relationship("CarGarageBridge", back_populates="car")
+    garages = relationship("Garage", secondary="CarGarageBridge", back_populates="cars")
 
 
 class CarGarageBridge(Base):
@@ -42,9 +43,6 @@ class CarGarageBridge(Base):
     id = Column(Integer, primary_key=True)
     carId = Column(Integer, ForeignKey("Car.id"), nullable=False)
     garageId = Column(Integer, ForeignKey("Garage.id"), nullable=False)
-
-    car = relationship("Car", back_populates="garages")
-    garage = relationship("Garage", back_populates="cars")
 
 
 class Maintenance(Base):
@@ -56,7 +54,7 @@ class Maintenance(Base):
     serviceType = Column(String, nullable=False)
     scheduledDate = Column(Date, nullable=False)
 
-    garage = relationship("Garage", backref="maintenances")
+    garage = relationship("Garage", backref="maintenances")  # backref keeps the Maintenance objects
     car = relationship("Car", backref="maintenances")
 
     @property
@@ -71,13 +69,11 @@ class Maintenance(Base):
 # Create a connection to the db
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 
-# # Delete all data
+# Delete all data
 # Base.metadata.drop_all(engine)
 
 # Create tables
 Base.metadata.create_all(bind=engine)
-
-
 ##########################
 # alembic migrations update:
 # alembic revision --autogenerate -m "comment"
