@@ -18,10 +18,6 @@ class Garage(Base):
 
     cars = relationship("Car", secondary="CarGarageBridge", back_populates="garages")
 
-    @property
-    def available(self):
-        return self.capacity - len(self.maintenances)
-
 
 class Car(Base):
     __tablename__ = "Car"

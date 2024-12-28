@@ -13,6 +13,15 @@ class GarageValidation(BaseModel):
         from_attributes = True  # for alchemy orm
 
 
+class GarageAvailabilityReport(BaseModel):
+    date: date
+    requests: int
+    availableCapacity: int
+
+    class Config:
+        from_attributes = True
+
+
 class CarValidationPOST(BaseModel):
     make: str
     model: str

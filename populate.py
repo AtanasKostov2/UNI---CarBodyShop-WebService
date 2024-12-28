@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from constants import DATABASE_URL
-from models import Car, Garage
+from models import Car, Garage, Maintenance
+from datetime import date
 
 if __name__ == "__main__":
     engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
@@ -22,5 +23,16 @@ if __name__ == "__main__":
         db.add_all([garage1, garage2, garage3, garage4, car1, car2, car3])
         db.commit()
 
+        main1 = Maintenance(carId=1, garageId=1, serviceType="Maintenance", scheduledDate=date(2015, 3, 1))
+        main2 = Maintenance(carId=1, garageId=1, serviceType="Yearly checkup", scheduledDate=date(2016, 3, 1))
+        main3 = Maintenance(carId=1, garageId=2, serviceType="Maintenance", scheduledDate=date(2018, 3, 1))
+        main4 = Maintenance(carId=2, garageId=3, serviceType="Maintenance", scheduledDate=date(2019, 3, 1))
+        main5 = Maintenance(carId=2, garageId=4, serviceType="Oil change", scheduledDate=date(2019, 3, 1))
+        main6 = Maintenance(carId=3, garageId=1, serviceType="Yearly checkup", scheduledDate=date(2015, 3, 1))
+        main7 = Maintenance(carId=3, garageId=1, serviceType="Maintenance", scheduledDate=date(2015, 3, 2))
+        main8 = Maintenance(carId=3, garageId=4, serviceType="Maintenance", scheduledDate=date(2023, 3, 1))
+
+        db.add_all([main1, main2, main3, main4, main5, main6, main7, main8])
+        db.commit()
     finally:
         db.close()
