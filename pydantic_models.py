@@ -1,3 +1,4 @@
+from datetime import date
 from pydantic import BaseModel
 
 
@@ -30,6 +31,29 @@ class CarValidationGET(BaseModel):
     productionYear: int
     licensePlate: str
     garages: list[GarageValidation]
+
+    class Config:
+        from_attributes = True
+
+
+class MaintenanceValidationGET(BaseModel):
+    id: int
+    carId: int
+    carName: str
+    serviceType: str
+    scheduledDate: date
+    garageId: int
+    garageName: str
+
+    class Config:
+        from_attributes = True
+
+
+class MaintenanceValidationPOST(BaseModel):
+    carId: int
+    garageId: int
+    scheduledDate: date
+    serviceType: str
 
     class Config:
         from_attributes = True

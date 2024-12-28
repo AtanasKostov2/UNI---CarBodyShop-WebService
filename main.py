@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 
 from fastapi.middleware.cors import CORSMiddleware
-import endpoints.garages as garages
-import endpoints.cars as cars
+from endpoints import garages, cars, maintenances
 
 app = FastAPI()
 
@@ -16,6 +15,7 @@ app.add_middleware(
 
 app.include_router(garages.router, prefix="/garages", tags=["Garages"])
 app.include_router(cars.router, prefix="/cars", tags=["Cars"])
+app.include_router(maintenances.router, prefix="/maintenance", tags=["Maintenances"])
 
 
 @app.get("/")

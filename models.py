@@ -27,7 +27,6 @@ class Car(Base):
     __tablename__ = "Car"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=True)
     make = Column(String, nullable=False)  # ???
     model = Column(String, nullable=False)
     productionYear = Column(Integer, nullable=False)
@@ -58,12 +57,12 @@ class Maintenance(Base):
     car = relationship("Car", backref="maintenances")
 
     @property
-    def garage_name(self) -> str:
+    def garageName(self) -> str:
         return self.garage.name
 
     @property
-    def car_name(self) -> str:
-        return self.car.name
+    def carName(self) -> str:
+        return self.car.model
 
 
 # Create a connection to the db
