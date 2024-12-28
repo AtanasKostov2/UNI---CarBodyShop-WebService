@@ -66,3 +66,15 @@ class MaintenanceValidationPOST(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class YearMonth(BaseModel):
+    year: int
+    month: str
+    leapYear: bool
+    monthValue: int
+
+
+class MaintenanceMonthlyRequestsReport(BaseModel):
+    yearMonth: YearMonth
+    requests: int

@@ -1,11 +1,15 @@
+import calendar
+from fastapi.responses import JSONResponse
 from constants import get_db
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from endpoints.reports import build_monthly_report
 from models import Car, Garage, Maintenance, CarGarageBridge
-from pydantic_models import MaintenanceValidationGET, MaintenanceValidationPOST
+from pydantic_models import MaintenanceMonthlyRequestsReport, MaintenanceValidationGET, MaintenanceValidationPOST
 
 from datetime import date
+from datetime import datetime
 
 router = APIRouter()
 
@@ -37,6 +41,41 @@ def post_maintenance(maintenance: MaintenanceValidationPOST, db: Session = Depen
     db.refresh(new_maintenance)
 
     return new_maintenance
+
+
+@router.get("/monthlyRequestsReport", response_model=list[MaintenanceMonthlyRequestsReport])
+def garage_report(
+    garageId: int,
+    startMonth: str,
+    endMonth: str,
+    db: Session = Depends(get_db),
+):
+    db_garage = db.get(Garage, garageId)
+    if db_garage is None:
+        raise HTTPException(status_code=404, detail="Garage not found")
+
+    try:
+        datetime.strptime(startMonth, "%Y-%m")
+        datetime.strptime(endMonth, "%Y-%m")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid date format passed. It should adhere to 'yyyy-mm':\n{e}")
+
+    startMonth += "-01"
+    dt = datetime.strptime(endMonth, "%Y-%m")
+    last_day = calendar.monthrange(dt.year, dt.month)[1]
+    endMonth += f"-{last_day}"
+
+    startMonth = datetime.strptime(startMonth, "%Y-%m-%d")
+    endMonth = datetime.strptime(endMonth, "%Y-%m-%d")
+
+    query = db.query(Maintenance)
+    query = query.filter(Maintenance.garageId == garageId)
+    query = query.filter(Maintenance.scheduledDate >= startMonth)
+    query = query.filter(Maintenance.scheduledDate <= endMonth)
+
+    available_maintenances = query.all()
+    response = build_monthly_report(available_maintenances, startMonth.year, endMonth.year)
+    return JSONResponse(content=response, status_code=200)
 
 
 @router.put("/{maintenance_id}", response_model=MaintenanceValidationGET)

@@ -20,6 +20,7 @@ def post_garage(garage: GarageValidation, db: Session = Depends(get_db)):
     return db_garage
 
 
+# must sit here otherwise fastapi explodes
 @router.get("/dailyAvailabilityReport", response_model=GarageAvailabilityReport)
 def garage_report(
     garageId: int,
