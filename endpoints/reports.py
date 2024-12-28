@@ -1,7 +1,9 @@
 from models import Maintenance
 
 
-def build_daily_report(available_maintenances: list[Maintenance], capacity: int):
+def build_daily_report(available_maintenances: list[Maintenance], capacity: int) -> list[dict]:
+    """Build the daily report for the Garage availability"""
+
     date_count = {}
     for maintenance in available_maintenances:
         if maintenance.scheduledDate not in date_count:
