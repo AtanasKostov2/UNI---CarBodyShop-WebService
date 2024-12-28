@@ -9,13 +9,17 @@ Uni project for a web service app focused on the workflow and management of car 
 
 * Backend: From the main directory run 
 
-    1. ```pip install -r requirements.txt``` to install the used libraries
+    1. ```python -m venv venv``` to create a local virtual environmnet
+    
+    2. ```venv\Scripts\activate``` to activate the virtual environmnet
 
-    2. ```python models.py``` to setup the DB schemas
+    3. ```pip install -r requirements.txt``` to install the used libraries
 
-    3. ```python populate.py``` to add placeholder items into the DB
+    4. ```python models.py``` to setup the DB schemas
 
-    4. ```python main.py``` to run the service
+    5. ```python populate.py``` to add placeholder items into the DB
+
+    6. ```python main.py``` to run the service
 
     
     Backend will listen for requests at http://127.0.0.1:8088
