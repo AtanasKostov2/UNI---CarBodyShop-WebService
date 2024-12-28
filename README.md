@@ -1,5 +1,5 @@
 # UNI---CarBodyShop-WebService
-Uni project for a web service app focused on workflow and management of car garage shops
+Uni project for a web service app focused on the workflow and management of car garage shops
 
 ## To setup the project and populate the DB:
 * Frontend: From the FE directory run
